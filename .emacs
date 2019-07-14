@@ -21,6 +21,9 @@ There are two things you can do about this warning:
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 
+(setq gc-cons-percentage 0.5)
+(setq gc-cons-threshold (* 1024 1024 100))
+
 (use-package evil
   :ensure t
   :init

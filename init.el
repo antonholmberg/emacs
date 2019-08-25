@@ -1,3 +1,7 @@
+;;; init --- My init file
+;;; Commentary:
+;;; My default ready to use init file.
+;;; Code:
 (require 'package)
 (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
                     (not (gnutls-available-p))))
@@ -23,6 +27,12 @@ There are two things you can do about this warning:
 
 (setq gc-cons-percentage 0.5)
 (setq gc-cons-threshold (* 1024 1024 100))
+
+;; This is only needed once, near the top of the file
+(eval-when-compile
+  ;; Following line is not needed if use-package.el is in ~/.emacs.d
+  (add-to-list 'load-path "~/.emacs.d/use-package")
+  (require 'use-package))
 
 (use-package evil
   :ensure t
@@ -58,18 +68,18 @@ There are two things you can do about this warning:
   :ensure t
   :commands lsp
   :hook
-  (rjsx-mode lsp)
-  (typescript-mode lsp))
+  (rjsx-mode . lsp)
+  (typescript-mode . lsp))
+
+(use-package exec-path-from-shell
+  :ensure t
+  :init
+  (exec-path-from-shell-initialize))
 
 (use-package flycheck
   :ensure t
   :init
   (global-flycheck-mode))
-
-(use-package lsp-ui
-  :ensure t
-  :commands lsp-ui-mode
-  :after (lsp-mode flycheck))
 
 (use-package yasnippet
   :ensure t
@@ -107,6 +117,7 @@ There are two things you can do about this warning:
   (projectile-mode 1))
 
 (use-package magit
+  :bind (("C-x g" . magit-status))
   :ensure t)
 
 (use-package evil-magit
@@ -139,8 +150,7 @@ There are two things you can do about this warning:
  '(js-indent-level 2)
  '(linum-relative-global-mode t)
  '(package-selected-packages
-   (quote
-    (yasnippet helm-projectile helm evil-magit magit projectile linum-relative rjsx-mode web-mode lsp-ui flycheck company-lsp lsp-mode typescript-mode company nord-theme evil use-package)))
+   '(prettier-js exec-path-from-shell yasnippet helm-projectile helm evil-magit magit projectile linum-relative rjsx-mode web-mode flycheck company-lsp lsp-mode typescript-mode company nord-theme evil use-package))
  '(sgml-basic-offset 2))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -148,3 +158,6 @@ There are two things you can do about this warning:
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+(provide 'init)
+;;; init.el ends here

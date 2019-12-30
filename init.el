@@ -25,19 +25,11 @@ There are two things you can do about this warning:
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 
-(setq gc-cons-percentage 0.5)
-(setq gc-cons-threshold (* 1024 1024 100))
-
 ;; This is only needed once, near the top of the file
 (eval-when-compile
   ;; Following line is not needed if use-package.el is in ~/.emacs.d
   (add-to-list 'load-path "~/.emacs.d/use-package")
   (require 'use-package))
-
-(use-package evil
-  :ensure t
-  :init
-  (evil-mode 1))
 
 (use-package linum-relative
   :ensure t
@@ -68,8 +60,13 @@ There are two things you can do about this warning:
   :ensure t
   :commands lsp
   :hook
+  (rust-mode . lsp)
   (rjsx-mode . lsp)
   (typescript-mode . lsp))
+
+(use-package lsp-ui
+  :ensure t
+  :commands lsp-ui-mode)
 
 (use-package exec-path-from-shell
   :ensure t
@@ -99,6 +96,11 @@ There are two things you can do about this warning:
   (sgml-basic-offset 2)
   :ensure t)
 
+(use-package rust-mode
+  :ensure t
+  :hook
+  (rust-mode . flycheck-rust-setup))
+
 (use-package web-mode
   :ensure t
   :after (lsp)
@@ -119,10 +121,6 @@ There are two things you can do about this warning:
 (use-package magit
   :bind (("C-x g" . magit-status))
   :ensure t)
-
-(use-package evil-magit
-  :ensure t
-  :after (magit))
 
 (use-package helm
   :ensure t
@@ -147,11 +145,12 @@ There are two things you can do about this warning:
  '(company-idle-delay 0)
  '(company-minimum-prefix-length 1)
  '(company-selection-wrap-around t)
- '(js-indent-level 2)
+ '(js-indent-level 2 t)
  '(linum-relative-global-mode t)
  '(package-selected-packages
-   '(prettier-js exec-path-from-shell yasnippet helm-projectile helm evil-magit magit projectile linum-relative rjsx-mode web-mode flycheck company-lsp lsp-mode typescript-mode company nord-theme evil use-package))
- '(sgml-basic-offset 2))
+   (quote
+    (flymake-rust flycheck-rust lsp-ui rust-mode prettier-js exec-path-from-shell yasnippet helm-projectile helm evil-magit magit projectile linum-relative rjsx-mode web-mode flycheck company-lsp lsp-mode typescript-mode company nord-theme evil use-package)))
+ '(sgml-basic-offset 2 t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
